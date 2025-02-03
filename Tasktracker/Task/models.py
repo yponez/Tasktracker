@@ -4,9 +4,7 @@ from datetime import timedelta
 
 class Developer(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    fullname = models.CharField(max_length=128)
-    login = models.CharField(max_length=64, unique=True)
-    password = models.CharField(max_length=128)
+    fullname = models.CharField(max_length=128, unique=True)
 
     def __str__(self):
         return self.fullname
