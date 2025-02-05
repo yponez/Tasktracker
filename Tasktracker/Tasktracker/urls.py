@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
-from Task.views import DeveloperCreateView,DeveloperUpdateView
+from Task.views import DeveloperCreateView,DeveloperUpdateView,DevactivityPeriod
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('createDev/',DeveloperCreateView.as_view()),
     path('',include('Task.urls')),
+    path('devActivityPeriod/<uuid:uuid>/',DevactivityPeriod.as_view())
 ]

@@ -21,7 +21,7 @@ class Task(models.Model):
         if self.start_time and self.end_time:
             time_difference = self.end_time - self.start_time
             total_seconds = int(time_difference.total_seconds())
-            return total_seconds// 3600
+            return total_seconds
         return 0
 
     def __str__(self):

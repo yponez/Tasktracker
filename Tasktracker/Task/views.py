@@ -1,11 +1,17 @@
+import uuid
 from datetime import datetime
+
+from django.db.models.expressions import result
+from django.http import JsonResponse, HttpResponse
+from django.template.defaulttags import querystring
 from django.utils import timezone
+from .DevActivity import  activityPeriod
 
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
 
-from .Serializer import DeveloperSerializer, TaskSerializer, StartTimeSerializer
+from .Serializer import DeveloperSerializer, TaskSerializer
 from .models import Developer,Task
 
 
@@ -34,4 +40,30 @@ class StarTimeView(generics.UpdateAPIView):
 
         return Response({"Отсчет времени начат.", task.start_time}, status = 200)
 
+class endTimeView(generics.UpdateAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
 
+    def post(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        task = self.get_object()
+        if task.end_time:
+            return Response("Отсчет времени уже закончен.")
+        elif task.start_time is None:
+            return Response("Отсчет времени еще не начат.")
+
+
+        task.end_time = timezone.now()
+        task.save()
+
+        return Response({"Отсчет времени закончен.", task.end_time}, status = 200)
+
+class DevactivityPeriod(generics.ListAPIView):
+    serializer_class = TaskSerializer
+
+    def get(self, request, *args, **kwargs):
+        developer_id = self.kwargs.get('uuid')
+        data = activityPeriod(developer_id)
+        return Response(data)
