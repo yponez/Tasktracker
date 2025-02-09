@@ -96,8 +96,8 @@ def getsummactivityinterval(developer_id,start_time,end_time):
             intervals.append(f"{interval_str} - {task.description}")
 
     intervals.append(f"Sum activity: "
-                     f"hours:{summactivity["hours"]} "
-                     f"minutes:{summactivity["minutes"]}")
+                     f"hours:{summactivity['hours']} "
+                     f"minutes:{summactivity['minutes']}")
 
     return intervals
 
