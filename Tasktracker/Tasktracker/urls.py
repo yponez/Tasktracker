@@ -14,19 +14,29 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from tkinter.font import names
+
 from django.contrib import admin
 from django.urls import path, re_path, include
 from Task.views import (DeveloperCreateView, DevactivityPeriod, DevactivityPeriodAll,
-                        DevmyactivityInterval, ActivityIntervals, DeleteTask, DeleteDeveloper)
+                        DevmyactivityInterval, ActivityIntervals, DeleteTask,
+                        DeleteDeveloper)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('createDev/',DeveloperCreateView.as_view()),
     path('',include('Task.urls')),
-    path('devActivityPeriod/<uuid:uuid>/',DevactivityPeriod.as_view()),
-    path('devActivityPeriodAll/<str:start_time>/<str:end_time>/',DevactivityPeriodAll.as_view()),
-    path('devMyActivity/<str:start_time>/<str:end_time>/<uuid:uuid>/',DevmyactivityInterval.as_view()),
-    path('activityIntervals/<str:start_time>/<str:end_time>/',ActivityIntervals.as_view()),
-    path('DeleteTaskData/<uuid:developer_id>/',DeleteTask.as_view()),
-    path('DeleteDeveloper/<uuid:id>/',DeleteDeveloper.as_view()),
+    path('createDev/',DeveloperCreateView.as_view(),
+         name = 'createDev'),
+    path('devActivityPeriod/<uuid:uuid>/',DevactivityPeriod.as_view(),
+         name = 'devActivityPeriod'),
+    path('devPeriodAll/<str:start_time>/<str:end_time>/',DevactivityPeriodAll.as_view(),
+         name = 'devPeriodAll'),
+    path('devMyActivity/<str:start_time>/<str:end_time>/<uuid:uuid>/',DevmyactivityInterval.as_view(),
+         name = 'devMyActivity'),
+    path('activityIntervals/<str:start_time>/<str:end_time>/',ActivityIntervals.as_view(),
+         name = 'activityIntervals'),
+    path('DeleteTaskData/<uuid:developer_id>/',DeleteTask.as_view(),
+         name = 'DeleteTaskData'),
+    path('DeleteDeveloper/<uuid:id>/',DeleteDeveloper.as_view(),
+         name = 'DeleteDeveloper'),
 ]

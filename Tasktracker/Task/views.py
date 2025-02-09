@@ -1,10 +1,7 @@
 from datetime import datetime
 from django.utils import timezone
-from rest_framework.generics import get_object_or_404
-from rest_framework.views import APIView
-
 from .DevActivity import  activityperiod,allactivityperiod,getsummactivityinterval,getactivityintervals
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.response import Response
 from .Serializer import DeveloperSerializer, TaskSerializer
 from .models import Developer,Task
@@ -28,7 +25,7 @@ class StarTimeView(generics.UpdateAPIView):
     def partial_update(self, request, *args, **kwargs):
         task = self.get_object()
         if task.start_time:
-            return Response("Отсчет времени уже начат.")
+            return Response("Отсчет времени уже начат.", status = status.HTTP_400_BAD_REQUEST)
 
         task.start_time = timezone.now()
         task.save()
@@ -45,9 +42,9 @@ class endTimeView(generics.UpdateAPIView):
     def partial_update(self, request, *args, **kwargs):
         task = self.get_object()
         if task.end_time:
-            return Response("Отсчет времени уже закончен.")
+            return Response("Отсчет времени уже закончен.", status = status.HTTP_400_BAD_REQUEST)
         elif task.start_time is None:
-            return Response("Отсчет времени еще не начат.")
+            return Response("Отсчет времени еще не начат.", status = status.HTTP_400_BAD_REQUEST)
 
 
         task.end_time = timezone.now()
