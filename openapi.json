@@ -1,0 +1,628 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Tasktracker",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000"
+    }
+  ],
+  "paths": {
+    "/createDev/": {
+      "post": {
+        "summary": "Создание нового разработчика",
+        "operationId": "createDeveloper",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullname": {
+                    "type": "string",
+                    "description": "имя разработчика (должно быть уникальным)",
+                    "example": "Иванов Иван"
+                  }
+                },
+                "required": [
+                  "fullname"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Успешное создание разработчика",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Уникальный идентификатор разработчика",
+                      "example": "b6c9eb43-cd3c-4e4a-8eaf-5a634a67f946"
+                    },
+                    "fullname": {
+                      "type": "string",
+                      "description": "Полное имя разработчика",
+                      "example": "Иванов Иван"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Неверный запрос, возможно, уже существует разработчик с данным полным именем",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "description": "Сообщение об ошибке",
+                      "example": "Developer с таким именем ужесуществует."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/updateDev/{id}/": {
+      "put": {
+        "summary": "Обновление данных разработчика",
+        "operationId": "updateDeveloper",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "идентификатор разработчика, которого необходимо обновить",
+            "schema": {
+              "type": "string",
+              "example": "b6c9eb43cd3c4e4a8eaf5a634a67f946"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullname": {
+                    "type": "string",
+                    "description": "Имя разработчика должно быть уникальным",
+                    "example": "Петров Петр"
+                  }
+                },
+                "required": [
+                  "fullname"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешное обновление данных разработчика",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Уникальный идентификатор разработчика",
+                      "example": "b6c9eb43-cd3c-4e4a-8eaf-5a634a67f946"
+                    },
+                    "fullname": {
+                      "type": "string",
+                      "description": "Полное имя разработчика",
+                      "example": "Петров Петр"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Неверный запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Developer с таким именем ужесуществует."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/start-time/{id}/": {
+      "post": {
+        "summary": "Начать отсчет времени для задачи",
+        "description": "Запускает отсчет времени для существующей задачи, если отсчет не был начат.",
+        "operationId": "startTime",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Уникальный идентификатор задачи",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "task_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "3fa85f6457174562b3fc2c963f66afa6"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешное выполнение, отсчет времени начат.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Отсчет времени начат."
+                    },
+                    "start_time": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-02-10T13:10:41.214507Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка, если отсчет времени уже начат.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Отсчет времени уже начат."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/end-time/{id}/": {
+      "post": {
+        "summary": "Закончить отсчет времени для задачи",
+        "description": "заканчивает отсчет времени для существующей задачи, если отсчет не был начат или уже закончен.",
+        "operationId": "endTime",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Уникальный идентификатор задачи",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "task_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "3fa85f6457174562b3fc2c963f66afa6"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешное выполнение, отсчет времени закончен.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Отсчет времени закончен."
+                    },
+                    "start_time": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-02-10T13:10:41.214507Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка, связанная с состоянием отсчета времени.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Ошибка: отсчет времени уже завершен или еще не начат."
+                    },
+                    "reason": {
+                      "type": "string",
+                      "enum": [
+                        "Отсчет времени уже закончен.",
+                        "Отсчет времени еще не начат."
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activity-periods/{uuid}/": {
+      "get": {
+        "summary": "Получение периодов активности для разработчика",
+        "description": "Возвращает все периоды активности для заданного разработчика по его уникальному идентификатору (UUID).",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "description": "Уникальный идентификатор разработчика",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный ответ с данными о периодах активности",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "description": {
+                        "type": "string",
+                        "example": "Create API"
+                      },
+                      "time_spend": {
+                        "type": "string",
+                        "example": "hours:0, minutes:20"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devPeriodAll/{start_time}/{end_time}/": {
+      "get": {
+        "summary": "Получить задачи за период активности",
+        "description": "Получает задачи, созданные в определенный период времени, определяемый датами начала и окончания.",
+        "parameters": [
+          {
+            "name": "start_time",
+            "in": "path",
+            "required": true,
+            "description": "Дата начала периода в формате YYYY-MM-DD.",
+            "schema": {
+              "type": "string",
+              "example": "2025-02-01"
+            }
+          },
+          {
+            "name": "end_time",
+            "in": "path",
+            "required": true,
+            "description": "Дата окончания периода в формате YYYY-MM-DD.",
+            "schema": {
+              "type": "string",
+              "example": "2025-02-15"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный ответ с данными о задачах.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "9ea7ba5f-dcbd-482c-bfce-06b248080e9b"
+                          },
+                          "fullname": {
+                            "type": "string",
+                            "example": "Ivan"
+                          },
+                          "TASKS_USER": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "example": "9f5d55d6-6182-4c0a-9992-c03c6bd26076"
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "example": "Create API"
+                                },
+                                "activity": {
+                                  "type": "integer",
+                                  "example": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devMyActivity/{start_time}/{end_time}/{uuid}/": {
+      "get": {
+        "summary": "Получить суммарную активность разработчика за указанный период",
+        "description": "Возвращает общее время активности разработчика за указанный интервал времени и за каждую задачу.",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "description": "Уникальный идентификатор разработчика.",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "9ea7ba5f-dcbd-482c-bfce-06b248080e9b"
+            }
+          },
+          {
+            "name": "start_time",
+            "in": "path",
+            "required": true,
+            "description": "Дата начала интервала в формате YYYY-MM-DD.",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2025-02-15"
+            }
+          },
+          {
+            "name": "end_time",
+            "in": "path",
+            "required": true,
+            "description": "Дата конца интервала в формате YYYY-MM-DD.",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2025-02-15"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный ответ с суммарной активностью",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": [
+                      "hours:0, minutes:20 - Create API",
+                      "Sum activity: hours:0 minutes:20"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activityintervals/{start_time}/{end_time}": {
+      "get": {
+        "summary": "Получить интервалы активности",
+        "description": "Возвращает интервалы активности за указанный временной период.",
+        "parameters": [
+          {
+            "name": "start_time",
+            "in": "path",
+            "required": true,
+            "description": "Дата и время начала интервала в формате YYYY-MM-DD.",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2025-02-01"
+            }
+          },
+          {
+            "name": "end_time",
+            "in": "path",
+            "required": true,
+            "description": "Дата и время окончания интервала в формате YYYY-MM-DD.",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2025-02-15"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный ответ с интервалами активности",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": "(start:2025-02-10 13:10:41+00:00 end:2025-02-10 13:31:08+00:00) - (hours:0, minutes:20) - (Create API)"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/DeleteTaskData/{developer_uuid}": {
+      "delete": {
+        "summary": "Удалить все задачи разработчика",
+        "description": "Удаляет все задачи, связанные с указанным идентификатором разработчика.",
+        "parameters": [
+          {
+            "name": "developer_uuid",
+            "in": "path",
+            "required": true,
+            "description": "Уникальный идентификатор разработчика, чьи задачи необходимо удалить.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Задачи успешно удалены",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Удалено"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Задачи не найдены для указанного разработчика",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "У разработчика нет задач"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/DeleteDeveloper/{uuid}": {
+      "delete": {
+        "summary": "Удалить разработчика",
+        "description": "Удаляет разработчика по его уникальному идентификатору.",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "description": "Уникальный идентификатор разработчика, которого необходимо удалить.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Разработчик успешно удалён",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Удалено"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Разработчик с указанным идентификатором не найден",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Такого разработчика нет"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

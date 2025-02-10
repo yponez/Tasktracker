@@ -5,16 +5,19 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from .Serializer import DeveloperSerializer, TaskSerializer
 from .models import Developer,Task
+from rest_framework import generics
 
-
+# добавить пользователя
 class DeveloperCreateView(generics.CreateAPIView):
     queryset = Developer.objects.all()
     serializer_class = DeveloperSerializer
 
+# изменить данные пользователя
 class DeveloperUpdateView(generics.UpdateAPIView):
     queryset = Developer.objects.all()
     serializer_class = DeveloperSerializer
 
+# начать отсчет времени задачи по ее id
 class StarTimeView(generics.UpdateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
@@ -32,7 +35,8 @@ class StarTimeView(generics.UpdateAPIView):
 
         return Response({"Отсчет времени начат.", task.start_time}, status = 200)
 
-class endTimeView(generics.UpdateAPIView):
+# закончить отсчет времени задачи по ее id
+class EndTimeView(generics.UpdateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
@@ -52,6 +56,7 @@ class endTimeView(generics.UpdateAPIView):
 
         return Response({"Отсчет времени закончен.", task.end_time}, status = 200)
 
+# показать все задачи разработчика и затраченное время в часах и минутах
 class DevactivityPeriod(generics.ListAPIView):
     serializer_class = TaskSerializer
 
@@ -60,6 +65,7 @@ class DevactivityPeriod(generics.ListAPIView):
         data = activityperiod(developer_id)
         return Response(data)
 
+# показать трудозатраты всех разработчиков за период времени
 class DevactivityPeriodAll(generics.ListAPIView):
     serializer_class = TaskSerializer
 
@@ -74,6 +80,7 @@ class DevactivityPeriodAll(generics.ListAPIView):
         data = allactivityperiod(start_time, end_time)
         return Response(data)
 
+# показать трудозатраты разработчика за период времени и суммарную активность
 class DevmyactivityInterval(generics.ListAPIView):
     serializer_class = TaskSerializer
 
@@ -89,6 +96,7 @@ class DevmyactivityInterval(generics.ListAPIView):
         data = getsummactivityinterval(developer_id,start_time,end_time)
         return Response(data)
 
+# показать все временные интервалы занятые активностью
 class ActivityIntervals(generics.ListAPIView):
     serializer_class = TaskSerializer
 
@@ -103,6 +111,7 @@ class ActivityIntervals(generics.ListAPIView):
         data = getactivityintervals(start_time,end_time)
         return Response(data)
 
+# удалить задачи разработчика по его id
 class DeleteTask(generics.DestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
@@ -115,6 +124,7 @@ class DeleteTask(generics.DestroyAPIView):
         tasks.delete()
         return Response("Удалено")
 
+# удалить всю информацию о разработчике по его id
 class DeleteDeveloper(generics.DestroyAPIView):
     queryset = Developer.objects.all()
     serializer_class = DeveloperSerializer
